@@ -339,7 +339,7 @@ function inferType(w){
   if(rg.some(g=>(w.grape||'').toLowerCase().includes(g)))return 'red';
   return 'white';
 }
-const APP_BUILD='2026-06-04 · build 4';
+const APP_BUILD='2026-06-04 · build 5';
 function fmtDate(iso){if(!iso)return '';return new Date(iso).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}
 function fmtDateTime(iso){if(!iso)return '';return new Date(iso).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
 function nowLocal(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16);}
@@ -929,8 +929,8 @@ function App(){
     const r=new FileReader();
     r.onload=ev=>{try{const d=JSON.parse(ev.target.result);const inc=d.wines||d;
       if(!Array.isArray(inc)){showToast('Invalid file');return;}
-      const toAdd=inc.filter(w=>w.id&&!wines.some(e=>e.id===w.id));
-      setWines(w=>[...w,...toAdd]);showToast('Restored '+toAdd.length+' wines');
+      setWines(cur=>{const m=new Map(cur.map(w=>[w.id,w]));inc.forEach(w=>{if(w.id)m.set(w.id,w);});return Array.from(m.values());});
+      showToast('Restored '+inc.filter(w=>w.id).length+' wines');
     }catch{showToast('Could not read file');}};
     r.readAsText(file);e.target.value='';
   }
